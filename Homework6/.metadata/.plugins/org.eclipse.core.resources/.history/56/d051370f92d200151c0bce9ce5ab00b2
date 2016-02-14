@@ -1,0 +1,9 @@
+package Task2;
+
+public class Dog extends Animal{
+	public Dog(String name, int age, boolean isHungry) {
+		super(name, age, isHungry);
+		
+	}
+
+}

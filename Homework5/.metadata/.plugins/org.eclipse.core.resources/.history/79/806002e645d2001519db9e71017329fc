@@ -1,0 +1,35 @@
+package Homework5;
+
+import java.util.Arrays;
+
+public class Task1 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		// Задача 1:
+		// Напишете метод, който да приема 2 параметъра : единият е едномерен
+		// масив от цели числа, а другият параметър е цяло число.
+		// Нека се провери дали едномерният масив съдържа в някой от елементите
+		// си стойността, която е зададена във втория параметър; Ако масива
+		// съдържа числото, нека се върне true като резултат, в противен случай
+		// да се върне false. Напишете програма, която тества този метод с
+		// различни входни данни.
+		int[] arr = { 1, 2, 5, -6, -3, 21 };
+		int number = 12;
+		System.out.println(
+				"Масивът " + Arrays.toString(arr) + " съдържа числото " + number + ": " + containsNumber(arr, number));
+
+	}
+
+	public static boolean containsNumber(int[] arr, int number) {
+		boolean containsNumber = false;
+		for (int i = 0; i < arr.length; i++) {
+			if (arr[i] == number) {
+				containsNumber = true;
+				break;
+			}
+		}
+		return containsNumber;
+	}
+
+}

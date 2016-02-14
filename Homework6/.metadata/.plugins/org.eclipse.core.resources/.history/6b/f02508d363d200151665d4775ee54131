@@ -1,0 +1,17 @@
+package Task1;
+
+public class Square extends Figure {
+
+	@Override
+	public void calculatePerimeter() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void calculateArea() {
+		// TODO Auto-generated method stub
+
+	}
+
+}

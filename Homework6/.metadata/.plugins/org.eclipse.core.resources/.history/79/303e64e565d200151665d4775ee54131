@@ -1,0 +1,18 @@
+package Task1;
+
+public class Circle extends Figure{
+
+	@Override
+	public void calculatePerimeter() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void calculateArea() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+
+}

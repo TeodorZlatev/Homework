@@ -1,0 +1,21 @@
+package Task2;
+
+public class Dog extends Animal{
+	
+	public Dog(String name, int age, boolean isHungry, boolean hasFood) {
+		super(name, age, isHungry, hasFood);
+		// TODO Auto-generated constructor stub
+	}
+
+	public void setFood(){
+		this.isThereFood(true);
+	}
+
+	public void eating() {
+		System.out.printf("Куче %s изяде храната си.", this.getName());
+		this.isThereFood(false);
+	}
+	
+	
+
+}

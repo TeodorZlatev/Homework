@@ -1,0 +1,23 @@
+package Task2;
+
+public class Fish extends Animal{
+
+	public Fish(String name, boolean isHungry, boolean hasFood) {
+		super(name,isHungry, hasFood);
+	}
+	
+	public void setFood() {
+		this.setHasFood(true);
+	}
+
+	public void eating() {
+		if (this.isHasFood()) {
+			System.out.printf("Риба %s изяде храната си.", this.getName());
+			this.setHasFood(false);
+		} else {
+			System.out.printf("Риба %s няма оставена храна.", this.getName());
+		}
+	}
+
+
+}

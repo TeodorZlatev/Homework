@@ -1,0 +1,31 @@
+package Task1;
+
+public class Rectangle extends Figure {
+	private int firstSide;
+	private int secondSide;
+
+	public Rectangle(int firstSide, int secondSide) {
+		this.firstSide = firstSide;
+		this.secondSide = secondSide;
+	}
+
+	public int getFirstSide() {
+		return firstSide;
+	}
+
+	public int getSecondSide() {
+		return secondSide;
+	}
+
+	public void calculatePerimeter() {
+		System.out.printf("Периметърът на правоъгълника е 2.(%d + %d) = %d", firstSide, secondSide,
+				(2 * (firstSide + secondSide)));
+
+	}
+
+	public void calculateArea() {
+		System.out.printf("Площта на правоъгълника е %d.%d = %d", firstSide, secondSide, (firstSide * secondSide));
+
+	}
+
+}

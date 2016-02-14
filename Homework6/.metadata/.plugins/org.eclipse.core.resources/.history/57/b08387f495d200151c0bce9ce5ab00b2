@@ -1,0 +1,13 @@
+package Task2;
+
+public class Room {
+	private String name;
+	private Person[] persons;
+	private Animal[] animals;
+	
+	public Room(String name, Person[] persons , Animal[] animals){
+		this.name = name;
+		this.persons = persons;
+		this.animals = animals;
+	}
+}

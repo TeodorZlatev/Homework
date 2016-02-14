@@ -1,0 +1,21 @@
+package Homework5;
+
+import java.util.Scanner;
+
+public class Task2 {
+	public static void main(String[] args) {
+		// Задача 2:
+		// Напишете метод, който отпечатва цифрите на дадено десетично число в
+		// обратен ред. Например 512, трябва да бъде отпечатано като 215
+		Scanner sc = new Scanner(System.in);
+		String number = sc.next();
+
+	}
+
+	public static void printBackToFront(String number) {
+		System.out.printf("Числото %d изпечатано наобратно е ", number);
+		for (int i = number.length(); i >= 0; i--) {
+			System.out.print(number.charAt(i));
+		}
+	}
+}

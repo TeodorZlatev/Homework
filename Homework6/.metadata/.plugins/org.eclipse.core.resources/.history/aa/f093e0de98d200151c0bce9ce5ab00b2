@@ -1,0 +1,22 @@
+package Task2;
+
+public class Cat extends Animal {
+
+	public Cat(String name, boolean isHungry, boolean hasFood) {
+		super(name, isHungry, hasFood);
+	}
+
+	public void eating() {
+		if (this.isHasFood()) {
+			System.out.printf("Котка %s изяде храната си.", this.getName());
+			this.setHasFood(false);
+		} else {
+			System.out.printf("Котка %s няма оставена храна.", this.getName());
+		}
+	}
+	
+	public void showInfo(){
+		System.out.printf("Котка\nИме: %s\n", this.getName());
+		}
+
+}

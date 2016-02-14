@@ -1,0 +1,26 @@
+package Task1;
+
+public class Square extends Figure {
+	private int side;
+	public static int numberSquares=0;
+
+	public Square(int side) {
+		System.out.println("Създаване на квадрат № " + numberSquares++);
+		this.side = side;
+	}
+
+	public int getSide() {
+		return side;
+	}
+
+	public void calculatePerimeter() {
+		System.out.printf("Периметърът на квадрата е 4.%d = %d.\n", side, (4 * side));
+
+	}
+
+	public void calculateArea() {
+		System.out.printf("Площта на квадрата е %1$d.1$%d = %d.\n", side, (side * side));
+
+	}
+
+}

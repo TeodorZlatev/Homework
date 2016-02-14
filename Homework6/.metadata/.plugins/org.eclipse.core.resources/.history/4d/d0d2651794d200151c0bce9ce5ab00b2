@@ -1,0 +1,20 @@
+package Task2;
+
+public class Rabbit extends Animal{
+
+	public Rabbit(String name, int age, boolean isHungry, boolean hasFood) {
+		super(name, age, isHungry, hasFood);
+		// TODO Auto-generated constructor stub
+	}
+	
+	public void setFood(){
+		this.isThereFood(true);
+	}
+
+	public void eating() {
+		System.out.printf("Заек %s изяде храната си.", this.getName());
+		this.isThereFood(false);
+	}
+
+
+}
