@@ -1,0 +1,31 @@
+package Task1;
+
+import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
+
+public class Task1 {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		float number = 0;
+		boolean isIncorrect = true;
+		while (isIncorrect)
+			try {
+				isIncorrect = false;
+				System.out.print("Въведете реално число: ");
+				number = sc.nextFloat();
+
+			} catch (InputMismatchException ime) {
+				isIncorrect = true;
+				System.out.println("The token doesn't match the Float regular expression.");
+			} catch (NoSuchElementException nsee) {
+				isIncorrect = true;
+				System.out.println("Input is exhausted.");
+			} catch (IllegalStateException ise) {
+				isIncorrect = true;
+				System.out.println("This scanner is closed.");
+			}
+	}
+
+}
