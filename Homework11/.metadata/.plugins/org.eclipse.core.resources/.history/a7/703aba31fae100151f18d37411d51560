@@ -1,0 +1,28 @@
+package Task3;
+
+public class Generic<T> {
+	private T field;
+	
+	public T getField(){
+		return field;
+	}
+	
+	public void put(T field){
+		this.field = field;
+	}
+	
+	public void change(T value){
+		System.out.println("value = " + value);
+		T temp;
+		temp = this.field;
+		System.out.println("temp = " + temp + " this.field = " + this.field);
+		this.field = value;
+		System.out.println(" this.field = " + this.field + " value = " + value);
+		value = temp;
+		System.out.println("value " + value + " temp = " + temp);
+	}
+	
+	public void print(){
+		System.out.println(field);
+	}
+}

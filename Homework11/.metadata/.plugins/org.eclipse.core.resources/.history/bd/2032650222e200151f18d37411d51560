@@ -1,0 +1,20 @@
+package Task4;
+
+public class MainClass {
+
+	public static void main(String[] args) {
+		Dog dog1 = new Dog("Куче 1");
+		Dog dog2 = new Dog("Куче 2");
+		Dog dog3 = new Dog("Куче 3");
+		Dog dog4 = new Dog("Куче 4");
+		AnimalShelter<Dog> animalShelter1 = new AnimalShelter<Dog>("Приют за кучета");
+		animalShelter1.add(dog1);
+		animalShelter1.add(dog2);
+		animalShelter1.add(dog3);
+		animalShelter1.printAll();
+		animalShelter1.deleteAnimal(dog3);
+		animalShelter1.printAll();
+
+	}
+
+}

@@ -1,0 +1,16 @@
+package Task5;
+
+public class Demo {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		SingleLinkedList sll = new SingleLinkedList();
+		sll.addLast("1");
+		sll.addLast("2");
+		System.out.println(sll.removeLast());
+		sll.addLast("3");
+		sll.printAll();
+
+	}
+
+}

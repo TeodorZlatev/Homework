@@ -1,0 +1,42 @@
+package Task1;
+
+public enum Month {
+	JANUARY(1), FEBRUARY(2), MARCH(3), APRIL(4), MAY(5), JUNE(6), JULY(7), AUGUST(8), SEPTEMBER(9), OCTOBER(
+			10), NOVEMBER(11), DECEMBER(12);
+	
+	final int value;
+	Month(int value){
+		this.value = value;
+	}
+	
+	public void print(){
+		System.out.print("Месец №" + this.value + " е ");
+		switch(value){
+		case 1: System.out.println("Януари.");
+		break;
+		case 2: System.out.println("Февруари.");
+		break;
+		case 3: System.out.println("Март.");
+		break;
+		case 4: System.out.println("Април.");
+		break;
+		case 5: System.out.println("Май.");
+		break;
+		case 6: System.out.println("Юни.");
+		break;
+		case 7: System.out.println("Юли.");
+		break;
+		case 8: System.out.println("Август.");
+		break;
+		case 9: System.out.println("Септември.");
+		break;
+		case 10: System.out.println("Октомври.");
+		break;
+		case 11: System.out.println("Ноември.");
+		break;
+		case 12: System.out.println("Декември.");
+		break;
+		
+		}
+	}
+}

@@ -1,0 +1,40 @@
+package Task4;
+
+import java.util.ArrayList;
+
+//Напишете генеричен клас: AnimalShelter. Нека той работи като приют за животни. 
+//Реализирайте генерични методи за добавяне, принтиране на всички и изтриване 
+//на животни в този приют. Нека в този приют да може да се добавят само животни от даден тип, 
+//например: само Dog, Pitbull, etc.
+
+//Напишете примерен клас за да проверите поведението на приюта. 
+//Използвайте няколко инстанции на класа AnimalShelter за да добавите 
+//различни типове животни (но от един и същи тип) в тях.
+
+public class AnimalShelter<T> {
+	ArrayList<T> animals = new ArrayList<T>();
+
+	public void add(T animal) {
+		animals.add(animal);
+	}
+
+	public void printAll() {
+		for (T animal : animals) {
+			System.out.println(animal);
+		}
+
+		for (int i = 0; i < animals.size(); i++) {
+			System.out.println(animals.get(i));
+		}
+	}
+
+	public void deleteAnimal(T removingAnimal) {
+		if (animals.contains(removingAnimal)) {
+			animals.remove(removingAnimal);
+			System.out.println("Животното е премахнато от списъка.");
+		} else {
+			System.out.println("Няма такова животно.");
+		}
+	}
+
+}

@@ -1,0 +1,15 @@
+package Task3;
+
+public class Task3<T> {
+	private T field;
+	public Task3(T field){
+		this.field = field;
+	}
+	
+	public void change(T value){
+		T temp;
+		temp = this.field;
+		this.field = value;
+		value = temp;
+	}
+}

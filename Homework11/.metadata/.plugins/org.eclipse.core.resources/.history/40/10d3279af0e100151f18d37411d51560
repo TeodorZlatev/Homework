@@ -1,0 +1,13 @@
+package Task1;
+
+public enum Month{
+	
+}
+
+public class Task1 {
+
+	public static void main(String[] args) {
+		
+	}
+
+}

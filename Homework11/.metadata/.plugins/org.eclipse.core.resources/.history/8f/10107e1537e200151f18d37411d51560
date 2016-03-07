@@ -1,0 +1,104 @@
+package Task5;
+
+import java.util.NoSuchElementException;
+
+public class SingleLinkedList<T> {
+	static class Item<T> {
+		private T data;
+		private Item<T> next;
+
+		public Item(T data) {
+			this(data, null);
+		}
+
+		public Item(T data, Item next) {
+			this.data = data;
+			this.next = next;
+		}
+
+		public T getData() {
+			return data;
+		}
+
+		public void setData(T data) {
+			this.data = data;
+		}
+
+		public Item getNext() {
+			return next;
+		}
+
+		public void setNext(Item next) {
+			this.next = next;
+		}
+	}
+
+	Item head;
+	int length;
+
+	public SingleLinkedList() {
+		this.length = 0;
+	}
+
+	public void addLast(T data) {
+		if (head == null) {
+			head = new Item(data);
+			length++;
+			return;
+		}
+		Item currentItem = head;
+		while (currentItem.getNext() != null) {
+			currentItem = currentItem.getNext();
+		}
+		currentItem.setNext(new Item(data));
+		length++;
+	}
+
+	public Object getAt(int index) throws ArrayIndexOutOfBoundsException {
+		if (length == 0 || length < index) {
+			throw new ArrayIndexOutOfBoundsException(index);
+		}
+		Item itemAt = head;
+
+		for (int i = 0; i < index; i++) {
+			itemAt = itemAt.getNext();
+		}
+		return itemAt.getData();
+	}
+
+	public Object removeLast() throws NoSuchElementException {
+		Object ret = null;
+		if (length == 0) {
+			throw new NoSuchElementException();
+		}
+		if (length == 1) {
+			ret = head.getData();
+			head = null;
+			return ret;
+		}
+
+		Item currentItem = head;
+		Item previousItem = null;
+		while (currentItem.getNext() != null) {
+			previousItem = currentItem;
+			currentItem = currentItem.getNext();
+		}
+
+		ret = currentItem.getData();
+		currentItem = null;
+		previousItem.setNext(currentItem);
+		length--;
+		return ret;
+
+	}
+
+	public void printAll() {
+		Item currentItem = head;
+		while (currentItem.getNext() != null) {
+			System.out.println("Current item data: " + currentItem.getData());
+			currentItem = currentItem.getNext();
+		}
+		System.out.println("Current item data: " + currentItem.getData());
+	}
+
+}

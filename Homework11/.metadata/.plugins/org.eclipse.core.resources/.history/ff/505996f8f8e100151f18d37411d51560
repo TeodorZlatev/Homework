@@ -1,0 +1,15 @@
+package Task3;
+
+public class Generic<T> {
+	private T field;
+	public Generic(T field){
+		this.field = field;
+	}
+	
+	public void change(T value){
+		T temp;
+		temp = this.field;
+		this.field = value;
+		value = temp;
+	}
+}
