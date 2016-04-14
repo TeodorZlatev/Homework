@@ -1,0 +1,16 @@
+package Task3;
+
+import java.util.Comparator;
+import java.util.Map.Entry;
+
+public class Comparators{
+	public static Comparator<Entry<String,Integer>> ASCENDING = new Comparator<Entry<String,Integer>>(){
+
+		@Override
+		public int compare(Entry<String, Integer> arg0, Entry<String, Integer> arg1) {
+			return arg0.getValue().compareTo(arg1.getValue());
+		}
+		
+	};
+	
+}

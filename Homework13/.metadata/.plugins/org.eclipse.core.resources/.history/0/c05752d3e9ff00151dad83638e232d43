@@ -1,0 +1,7 @@
+
+public class Person {
+	int number;
+	Person(){
+		System.out.println("Person");
+	}
+}

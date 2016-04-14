@@ -1,0 +1,13 @@
+package Task3;
+
+import java.util.Comparator;
+import java.util.Map.Entry;
+
+public class Comparators{
+	public static Comparator<Integer> ASCENDING = new Comparator<Integer>(){
+		public int compare(Integer arg0, Integer arg1) {
+			return arg0.compareTo(arg1);
+		}
+	};
+	
+}

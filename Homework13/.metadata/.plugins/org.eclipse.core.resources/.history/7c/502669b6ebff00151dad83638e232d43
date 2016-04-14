@@ -1,0 +1,32 @@
+package Task1;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Task1 {
+//	public static void main(String[] args) {
+//		String str = "http://swift.bg/courses/java/index.php";
+		
+//		String[] words = str.split("[^\\w.]+", 3); // ..split("[://|/]+",3);
+//		System.out.printf("Protocol: \"%s\"\n", words[0]);
+//		System.out.printf("Server: \"%s\"\n", words[1]);
+//		System.out.printf("Resource: \"%s\"\n", words[2]);
+//	}
+//}
+	
+	
+
+	    // http://stackoverflow.com/questions/18675870/expected-outcome-in-group-capture
+	    public static void main(String[] args) {
+	        String line = "http://swift.bg/courses/java/index.php";
+	        //Pattern pattern = Pattern.compile("(.*?)(\\d+)(.*)");
+	         Pattern pattern = Pattern.compile("(.*?):\\(.*)\\(.*)");
+
+	        Matcher matcher = pattern.matcher(line);
+	        while (matcher.find()) {
+	            System.out.println("group 1: " + matcher.group(1));
+	            System.out.println("group 2: " + matcher.group(2));
+	            System.out.println("group 3: " + matcher.group(3));
+	        }
+	    }
+	}
+

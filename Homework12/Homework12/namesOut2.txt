@@ -1,0 +1,23 @@
+Ascending names:
+Albena
+Dimitar
+Gabriela
+Georgi
+Iordan
+Ivan
+Kaloqn
+Milena
+Stanimira
+Stoqn
+
+Descending names:
+Stoqn
+Stanimira
+Milena
+Kaloqn
+Ivan
+Iordan
+Georgi
+Gabriela
+Dimitar
+Albena
