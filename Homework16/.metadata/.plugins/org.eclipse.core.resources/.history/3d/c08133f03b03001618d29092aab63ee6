@@ -1,0 +1,18 @@
+package VideoStore;
+
+public class Movie {
+	private int id;
+	private int quantity;
+
+	public int getId() {
+		return id;
+	}
+
+	int getQuantity() {
+		return quantity;
+	}
+
+	public void setquantity(int quantity) {
+		this.quantity = quantity;
+	}
+}

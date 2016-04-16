@@ -1,0 +1,19 @@
+package VideoStore;
+
+public class User {
+	private int id;
+	private int filmsCounter;
+
+	public int getId() {
+		return id;
+	}
+
+	public int getFilmsCounter() {
+		return filmsCounter;
+	}
+
+	public void setFilmsCounter(int filmsCounter) {
+		this.filmsCounter = filmsCounter;
+	}
+
+}

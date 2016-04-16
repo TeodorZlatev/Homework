@@ -1,0 +1,310 @@
+package VideoStore;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
+
+public class MainClass {
+
+	public static Connection connection = null;
+	public static PreparedStatement prst = null;
+	public static ResultSet rs = null;
+
+	public static void main(String[] args) {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+		} catch (ClassNotFoundException cnfe) {
+			System.out.println("MySQL JDBC Driver not found !!");
+			return;
+		}
+
+		try {
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/videostore", "root", "841952");
+
+			menu();
+		} catch (SQLException e) {
+			System.out.println("Connection Failed! Check output console");
+		} finally {
+			try {
+				if (connection != null) {
+					connection.close();
+				}
+			} catch (SQLException e) {
+				System.out.println("Connection didn't closed !!");
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public static void menu() {
+		Scanner sc = new Scanner(System.in);
+		int choice = 0;
+		do {
+			System.out.println(
+					"Меню:\n1.Взимане на филми.\n2.Връщане на филми.\n3.Информация за заети филми.\n4.Наличност на филми.\n5.Клиенти.\n6.Изход.");
+			System.out.print("Въведете избор: ");
+			choice = sc.nextInt();
+			switch (choice) {
+			case 1:
+				clientTakes();
+				break;
+			case 2:
+				clientReturns();
+				break;
+			case 3:
+				showInfromation();
+				break;
+			case 4:
+				showTitles();
+				break;
+			case 5:
+				showClients();
+				break;
+			default:
+				break;
+			}
+		} while (choice > 0 && choice < 6);
+	}
+
+	private static void showTitles() {
+		try {
+			String queryString = "SELECT * FROM videos WHERE quantity > 0;";
+			prst = connection.prepareStatement(queryString);
+			rs = prst.executeQuery();
+			System.out.println("\nНалични филми: ");
+			System.out.println("ID |Заглавие:                     |Брой");
+			System.out.println("---|------------------------------|----");
+			while (rs.next()) {
+				int id = rs.getInt("id");
+				String title = rs.getString("title");
+				int quantity = rs.getInt("quantity");
+				System.out.println(String.format("%-3d|%-30s|%-4d", id, title, quantity));
+			}
+			System.out.println("---|------------------------------|----\n");
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void showClients() {
+		// TODO Auto-generated method stub
+		try {
+			String queryString = "SELECT * FROM clients";
+			prst = connection.prepareStatement(queryString);
+			rs = prst.executeQuery();
+			System.out.println("\nКлиенти:");
+			System.out.println("ID |Име:                          |Заети филми");
+			System.out.println("---|------------------------------|-----------");
+			while (rs.next()) {
+				int id_User = rs.getInt("id");
+				String fullName = rs.getString("fullName");
+				int filmsCounter = rs.getInt("filmsCounter");
+				System.out.println(String.format("%-3d|%-30s|%-11d", id_User, fullName, filmsCounter));
+			}
+			System.out.println("---|------------------------------|-----------\n");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void showInfromation() {
+		// TODO Auto-generated method stub
+		try {
+			String queryString = "SELECT clients.fullName,videos.title, information.dateTaken, information.dateReturn FROM information JOIN clients ON (information.client_id = clients.id) JOIN videos ON (information.film_id = videos.id);";
+			prst = connection.prepareStatement(queryString);
+			rs = prst.executeQuery();
+
+			System.out.println("\nИнформация:");
+			System.out.println("                    |                              |  Дата на  |  Дата на");
+			System.out.println("Име на клиент       |Име на заетия филм            |  заемане  |  връщане");
+			System.out.println("--------------------|------------------------------|-----------|-----------");
+			while (rs.next()) {
+				String clientName = rs.getString("fullName");
+				String movieName = rs.getString("title");
+				Date dateTaken = rs.getDate("dateTaken");
+				Date dateReturn = rs.getDate("dateReturn");
+				System.out.println(
+						String.format("%-20s|%-30s|%-11s|%-10s", clientName, movieName, dateTaken, dateReturn));
+			}
+			System.out.println("--------------------|------------------------------|-----------|-----------\n");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void clientTakes() {
+		try {
+			String updateUser = "UPDATE clients SET filmsCounter = ? WHERE id = ?";
+			String updateFilm = "UPDATE videos SET quantity = ? WHERE id = ?";
+			String updateInfo = "INSERT INTO information(client_id,film_id,dateTaken,dateReturn) VALUES (?,?,DATE(CURDATE()), DATE(CURDATE() + 2));";
+			showClients();
+			User user = new User();
+			user = getUserInfo();
+			if (user.getFilmsCounter() < 5) {
+				showTitles();
+				Movie movie = new Movie();
+				movie = getMovieInfo();
+				prst = connection.prepareStatement(updateUser);
+				prst.setInt(1, user.getFilmsCounter() + 1);
+				prst.setInt(2, user.getId());
+				prst.execute();
+				prst = connection.prepareStatement(updateFilm);
+				prst.setInt(1, movie.getQuantity() - 1);
+				prst.setInt(2, movie.getId());
+				prst.execute();
+				prst = connection.prepareStatement(updateInfo);
+				prst.setInt(1, user.getId());
+				prst.setInt(2, movie.getId());
+				prst.execute();
+				System.out.println("Потребител " + user.getFullName() + " зае филм \"" + movie.getTitle() + "\".");
+			} else {
+				System.out.println("Потребителят няма право да заема повече филми!!");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	private static void clientReturns() {
+		Scanner sc = new Scanner(System.in);
+		try {
+			String deleteInfo = "DELETE FROM information WHERE information.client_id = ? AND information.film_id = ?;";
+			String updateClient = "UPDATE clients SET filmsCounter = filmsCounter - 1 WHERE id = ?;";
+			String updateMovie = "UPDATE videos SET quantity = quantity + 1 WHERE id = ?;";
+			String queryString = "SELECT clients.fullName, videos.id,videos.title, information.dateTaken, information.dateReturn FROM information JOIN clients ON (information.client_id = clients.id) JOIN videos ON (information.film_id=videos.id) WHERE clients.id = ?;";
+			ArrayList<Info> list = new ArrayList();
+			list = getInfo();
+			if (!list.isEmpty()) {
+				int clientId = list.get(0).getClientId();
+				prst = connection.prepareStatement(queryString);
+				prst.setInt(1, clientId);
+				rs = prst.executeQuery();
+				System.out.println("                    |ID- |                              |  Дата на  |  Дата на");
+				System.out.println("Име на клиент       |филм|Име на заетия филм            |  заемане  |  връщане");
+				System.out.println("--------------------|----|------------------------------|-----------|-----------");
+				while (rs.next()) {
+					String clientName = rs.getString("fullName");
+					int movieId = rs.getInt("id");
+					String movieName = rs.getString("title");
+					Date dateTaken = rs.getDate("dateTaken");
+					Date dateReturn = rs.getDate("dateReturn");
+					System.out.println(String.format("%-20s|%-4d|%-30s|%-11s|%-10s", clientName, movieId, movieName,
+							dateTaken, dateReturn));
+				}
+				System.out.println("--------------------|----|------------------------------|-----------|-----------");
+				System.out.print("Въведете \"id\" на филм за връщане: ");
+				int movieIdReturn = sc.nextInt();
+				for (int i = 0; i < list.size(); i++) {
+					if (list.get(i).getMovieId() == movieIdReturn) {
+						Date currentDate = new Date();
+						if (list.get(i).getDateReturn().compareTo(currentDate) > 0) {
+							double penalty = 0.5
+									* (getDateDiff(list.get(i).getDateReturn(), currentDate, TimeUnit.DAYS));
+							System.out.println(penalty);
+						}
+					}
+				}
+				prst = connection.prepareStatement(deleteInfo);
+				prst.setInt(1, clientId);
+				prst.setInt(2, movieIdReturn);
+				prst.execute();
+				prst = connection.prepareStatement(updateClient);
+				prst.setInt(1, clientId);
+				prst.execute();
+				prst = connection.prepareStatement(updateMovie);
+				prst.setInt(1, movieIdReturn);
+				prst.execute();
+				System.out.println("Потребитебят върна своя филм.");
+			} else {
+				System.out.println("Потребителят няма филми за връщане!!");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static User getUserInfo() {
+		User user = null;
+		try {
+			Scanner sc = new Scanner(System.in);
+			System.out.print("Въведете \"id\" на клиент: ");
+			int clientID = sc.nextInt();
+			String getUser = "SELECT * FROM clients where id = ?;";
+			user = new User();
+			prst = connection.prepareStatement(getUser);
+			prst.setInt(1, clientID);
+			rs = prst.executeQuery();
+			if (rs.next()) {
+				user.setId(rs.getInt("id"));
+				user.setFullName(rs.getString("fullName"));
+				user.setFilmsCounter(rs.getInt("filmsCounter"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return user;
+	}
+
+	private static Movie getMovieInfo() {
+		Movie movie = null;
+		try {
+			Scanner sc = new Scanner(System.in);
+			System.out.print("Въведете \"id\" на филм: ");
+			int filmID = sc.nextInt();
+			String getFilm = "SELECT * FROM videos WHERE id = ?;";
+			movie = new Movie();
+			prst = connection.prepareStatement(getFilm);
+			prst.setInt(1, filmID);
+			rs = prst.executeQuery();
+			if (rs.next()) {
+				movie.setId(rs.getInt("id"));
+				movie.setTitle(rs.getString("title"));
+				movie.setQuantity(rs.getInt("quantity"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return movie;
+	}
+
+	private static ArrayList<Info> getInfo() {
+		ArrayList<Info> list = null;
+		try {
+			Scanner sc = new Scanner(System.in);
+			showClients();
+			System.out.print("Въведете \"id\" на клиент: ");
+			int clientID = sc.nextInt();
+			String getInfo = "SELECT * FROM information WHERE information.client_id = ?;";
+			list = new ArrayList<Info>();
+			prst = connection.prepareStatement(getInfo);
+			prst.setInt(1, clientID);
+			rs = prst.executeQuery();
+			if (rs.next()) {
+				Info info = new Info();
+				info.setClientId(rs.getInt("client_id"));
+				info.setMovieId(rs.getInt("film_id"));
+				info.setDateEnter(rs.getDate("dateTaken"));
+				info.setDateReturn(rs.getDate("dateReturn"));
+				list.add(info);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+	public static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
+		long diffInMillies = date2.getTime() - date1.getTime();
+		return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
+	}
+}
