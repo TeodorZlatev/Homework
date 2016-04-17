@@ -1,8 +1,6 @@
 package VideoStore;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -22,9 +20,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -35,7 +31,7 @@ public class MainClass {
 	public static ResultSet rs = null;
 
 	public static void main(String[] args) {
-
+		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException cnfe) {
@@ -45,8 +41,8 @@ public class MainClass {
 
 		try {
 			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/videostore", "root", "841952");
+			transferToXML();
 			menu();
-
 		} catch (SQLException e) {
 			System.out.println("Connection Failed! Check output console");
 		} finally {
@@ -66,7 +62,7 @@ public class MainClass {
 		int choice = 0;
 		do {
 			System.out.println(
-					"Меню:\n1.Взимане на филми.\n2.Връщане на филми.\n3.Информация за заети филми.\n4.Наличност на филми.\n5.Клиенти.\n6.Трансфер до XML\n7.Трансфер до JSON.\n8.Изход.");
+					"Меню:\n1.Взимане на филми.\n2.Връщане на филми.\n3.Информация за заети филми.\n4.Наличност на филми.\n5.Клиенти.\n6.Изход.");
 			System.out.print("Въведете избор: ");
 			choice = sc.nextInt();
 			switch (choice) {
@@ -85,15 +81,10 @@ public class MainClass {
 			case 5:
 				showClients();
 				break;
-			case 6:
-				transferToXML();
-				break;
-			case 7:
-				transferToJSON();
 			default:
 				break;
 			}
-		} while (choice > 0 && choice < 8);
+		} while (choice > 0 && choice < 6);
 	}
 
 	private static void showTitles() {
@@ -336,69 +327,43 @@ public class MainClass {
 
 	public static void transferToXML() {
 		try {
-			String showMovies = "SELECT * FROM videos;";
-			String showClients = "SELECT * FROM clients";
-			prst = connection.prepareStatement(showMovies);
+			String queryString = "SELECT * FROM videos WHERE quantity > 0;";
+			prst = connection.prepareStatement(queryString);
 			rs = prst.executeQuery();
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 			Document doc = docBuilder.newDocument();
-
+			
 			Element videoStore = doc.createElement("Videostore");
-			Element movies = doc.createElement("Movies");
 			doc.appendChild(videoStore);
-			videoStore.appendChild(movies);
+//			Element movies = doc.createElement("Movies");
+//			doc.appendChild(movies);
 			while (rs.next()) {
 				Element movie = doc.createElement("Movie");
-				Element titleMovie = doc.createElement("Title");
-				Element quantityMovie = doc.createElement("Quantity");
-
 				movies.appendChild(movie);
 				int id = rs.getInt("id");
 				String idStr = id + "";
 				movie.setAttribute("id", idStr);
-
+				Element titleMovie = doc.createElement("title");
 				movie.appendChild(titleMovie);
 				String title = rs.getString("title");
 				titleMovie.appendChild(doc.createTextNode(title));
-
+				Element quantityMovie = doc.createElement("quantity");
 				movie.appendChild(quantityMovie);
 				int quantity = rs.getInt("quantity");
 				String quantityStr = quantity + "";
 				quantityMovie.appendChild(doc.createTextNode(quantityStr));
 			}
 
-			prst = connection.prepareStatement(showClients);
-			rs = prst.executeQuery();
-			Element clients = doc.createElement("Clients");
-			videoStore.appendChild(clients);
-			while (rs.next()) {
-				Element client = doc.createElement("Client");
-				Element name = doc.createElement("Names");
-				Element filmsCount = doc.createElement("Count");
-
-				clients.appendChild(client);
-				int id_User = rs.getInt("id");
-				String idStr = id_User + "";
-				client.setAttribute("id", idStr);
-
-				client.appendChild(name);
-				String fullName = rs.getString("fullName");
-				client.appendChild(doc.createTextNode(fullName));
-
-				client.appendChild(filmsCount);
-				int filmsCounter = rs.getInt("filmsCounter");
-				String filmsCounterStr = filmsCounter + "";
-				client.appendChild(doc.createTextNode(filmsCounterStr));
-			}
-
+			// write the content into xml file
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
 			DOMSource source = new DOMSource(doc);
-			StreamResult result = new StreamResult(new File("Videostore.xml"));
+			StreamResult result = new StreamResult(new File("Movies.xml"));
+
 			transformer.transform(source, result);
-			
-			System.out.println("Данните са записани в XML формат.");
+
+			System.out.println("File saved!");
 
 		} catch (ParserConfigurationException pce) {
 			pce.printStackTrace();
@@ -408,52 +373,4 @@ public class MainClass {
 			e.printStackTrace();
 		}
 	}
-
-	public static void transferToJSON() {
-		JSONObject obj = new JSONObject();
-		String showMovies = "SELECT * FROM videos;";
-		String showClients = "SELECT * FROM clients";
-		try {
-			prst = connection.prepareStatement(showMovies);
-			rs = prst.executeQuery();
-			JSONArray movies = new JSONArray();
-			while (rs.next()) {
-				JSONObject movie = new JSONObject();
-				movie.put("id", rs.getInt("id"));
-				movie.put("Title", rs.getString("title"));
-				movie.put("Quantity", rs.getInt("quantity"));
-				movies.put(movie);
-
-			}
-			obj.put("Movies", movies);
-			
-			prst = connection.prepareStatement(showClients);
-			rs = prst.executeQuery();
-			JSONArray clients = new JSONArray();
-			while (rs.next()) {
-				JSONObject client = new JSONObject();
-				client.put("id", rs.getInt("id"));
-				client.put("Name", rs.getString("fullName"));
-				client.put("Films count:", rs.getInt("filmsCounter"));
-				clients.put(client);
-
-			}
-			obj.put("Clients", clients);
-
-			FileWriter file = new FileWriter("Videostore.json");
-			file.write(obj.toString());
-			file.flush();
-			file.close();
-			System.out.println("Данните са записани в JSON формат.");
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
 }

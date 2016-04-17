@@ -93,7 +93,7 @@ public class MainClass {
 			default:
 				break;
 			}
-		} while (choice > 0 && choice < 8);
+		} while (choice > 0 && choice < 6);
 	}
 
 	private static void showTitles() {
@@ -352,16 +352,16 @@ public class MainClass {
 				Element movie = doc.createElement("Movie");
 				Element titleMovie = doc.createElement("Title");
 				Element quantityMovie = doc.createElement("Quantity");
-
+				
 				movies.appendChild(movie);
 				int id = rs.getInt("id");
 				String idStr = id + "";
 				movie.setAttribute("id", idStr);
-
+				
 				movie.appendChild(titleMovie);
 				String title = rs.getString("title");
 				titleMovie.appendChild(doc.createTextNode(title));
-
+				
 				movie.appendChild(quantityMovie);
 				int quantity = rs.getInt("quantity");
 				String quantityStr = quantity + "";
@@ -376,12 +376,12 @@ public class MainClass {
 				Element client = doc.createElement("Client");
 				Element name = doc.createElement("Names");
 				Element filmsCount = doc.createElement("Count");
-
+				
 				clients.appendChild(client);
 				int id_User = rs.getInt("id");
 				String idStr = id_User + "";
 				client.setAttribute("id", idStr);
-
+				
 				client.appendChild(name);
 				String fullName = rs.getString("fullName");
 				client.appendChild(doc.createTextNode(fullName));
@@ -397,8 +397,6 @@ public class MainClass {
 			DOMSource source = new DOMSource(doc);
 			StreamResult result = new StreamResult(new File("Videostore.xml"));
 			transformer.transform(source, result);
-			
-			System.out.println("Данните са записани в XML формат.");
 
 		} catch (ParserConfigurationException pce) {
 			pce.printStackTrace();
@@ -414,37 +412,23 @@ public class MainClass {
 		String showMovies = "SELECT * FROM videos;";
 		String showClients = "SELECT * FROM clients";
 		try {
-			prst = connection.prepareStatement(showMovies);
-			rs = prst.executeQuery();
-			JSONArray movies = new JSONArray();
-			while (rs.next()) {
-				JSONObject movie = new JSONObject();
-				movie.put("id", rs.getInt("id"));
-				movie.put("Title", rs.getString("title"));
-				movie.put("Quantity", rs.getInt("quantity"));
-				movies.put(movie);
-
-			}
-			obj.put("Movies", movies);
+		prst = connection.prepareStatement(showMovies);
+		rs = prst.executeQuery();
+		JSONArray list = new JSONArray();
+		while (rs.next()) {
+			Movie movie = new Movie();
+			movie.setId(rs.getInt("id"));
+			movie.setTitle(rs.getString("title"));
+			movie.setQuantity(rs.getInt("quantity"));
+			list.put(movie);
+		}
 			
-			prst = connection.prepareStatement(showClients);
-			rs = prst.executeQuery();
-			JSONArray clients = new JSONArray();
-			while (rs.next()) {
-				JSONObject client = new JSONObject();
-				client.put("id", rs.getInt("id"));
-				client.put("Name", rs.getString("fullName"));
-				client.put("Films count:", rs.getInt("filmsCounter"));
-				clients.put(client);
-
-			}
-			obj.put("Clients", clients);
+			obj.put("Movies", list);
 
 			FileWriter file = new FileWriter("Videostore.json");
 			file.write(obj.toString());
 			file.flush();
 			file.close();
-			System.out.println("Данните са записани в JSON формат.");
 
 		} catch (IOException e) {
 			e.printStackTrace();

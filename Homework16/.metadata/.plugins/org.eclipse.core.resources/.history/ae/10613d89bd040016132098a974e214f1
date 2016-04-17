@@ -93,7 +93,7 @@ public class MainClass {
 			default:
 				break;
 			}
-		} while (choice > 0 && choice < 8);
+		} while (choice > 0 && choice < 6);
 	}
 
 	private static void showTitles() {

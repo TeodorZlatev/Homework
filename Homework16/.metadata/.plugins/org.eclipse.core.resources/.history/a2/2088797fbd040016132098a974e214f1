@@ -93,7 +93,7 @@ public class MainClass {
 			default:
 				break;
 			}
-		} while (choice > 0 && choice < 8);
+		} while (choice > 0 && choice < 6);
 	}
 
 	private static void showTitles() {
@@ -397,8 +397,6 @@ public class MainClass {
 			DOMSource source = new DOMSource(doc);
 			StreamResult result = new StreamResult(new File("Videostore.xml"));
 			transformer.transform(source, result);
-			
-			System.out.println("Данните са записани в XML формат.");
 
 		} catch (ParserConfigurationException pce) {
 			pce.printStackTrace();
@@ -444,7 +442,6 @@ public class MainClass {
 			file.write(obj.toString());
 			file.flush();
 			file.close();
-			System.out.println("Данните са записани в JSON формат.");
 
 		} catch (IOException e) {
 			e.printStackTrace();
