@@ -1,0 +1,200 @@
+package entities;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.LinkedList;
+import java.util.List;
+
+public class DBManager {
+	private final static String DB_USERNAME = "root";
+	private final static String DB_PASSWORD = "841952";
+	private final static String DB_URI = "jdbc:mysql://localhost:3306/forums";
+	private final static String DB_DRIVER = "com.mysql.jdbc.Driver";
+	private static Connection connection = null;
+
+	public static void open() throws SQLException, ClassNotFoundException {
+		Class.forName(DB_DRIVER);
+		if (connection != null) {
+			close();
+		}
+		connection = DriverManager.getConnection(DB_URI, DB_USERNAME, DB_PASSWORD);
+	}
+
+	public static void close() throws SQLException {
+		if (connection != null) {
+			connection.close();
+		}
+		connection = null;
+	}
+
+	public static boolean validateUser(String username, String password) throws ClassNotFoundException, SQLException {
+		boolean status = false;
+		open();
+		PreparedStatement ps = connection.prepareStatement("select * from users where username=? and password=?");
+		ps.setString(1, username);
+		ps.setString(2, password);
+		ResultSet rs = ps.executeQuery();
+		status = rs.next();
+		rs.close();
+		ps.close();
+		close();
+		return status;
+	}
+
+	public static User getUser(String username, String password) throws SQLException, ClassNotFoundException {
+		open();
+		User user = null;
+		PreparedStatement ps = connection.prepareStatement("select * from users where username=? and password=?");
+		ps.setString(1, username);
+		ps.setString(2, password);
+		ResultSet rs = ps.executeQuery();
+		String userId = null;
+		if (rs.next()) {
+			user = new User(rs.getString("username"), rs.getString("names"), rs.getString("gender"), rs.getString("email"),rs.getString("age"));
+		}
+		rs.close();
+		ps.close();
+		close();
+		return user;
+	}
+
+	public static String getUsernameById(int userId) throws ClassNotFoundException, SQLException {
+		open();
+		String username = null;
+		PreparedStatement ps = connection.prepareStatement("SELECT username FROM users WHERE id = " + userId);
+		ResultSet rs = ps.executeQuery();
+		if (rs.next()) {
+			username = rs.getString("username");
+		}
+		rs.close();
+		ps.close();
+		close();
+		return username;
+	}
+
+	public static void insertUser(User user) throws ClassNotFoundException, SQLException {
+		open();
+		String insert = "INSERT INTO users (username, password, names, email, gender, age, date_registered, current_status, registered_status) VALUES (?,?,?,?,?,?,?,'online','new');";
+		PreparedStatement ps = connection.prepareStatement(insert);
+		ps.setString(1, user.getUserName());
+		ps.setString(2, user.getPassword());
+		ps.setString(3, user.getNames());
+		ps.setString(4, user.getEmail());
+		ps.setString(5, user.getGender());
+		ps.setString(6, user.getAge());
+		ps.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
+		ps.executeUpdate();
+		close();
+	}
+
+	public static void insertForum(Forum forum) throws ClassNotFoundException, SQLException {
+		open();
+		String insert = "INSERT INTO forums (title,date_created) VALUES (?,?);";
+		PreparedStatement ps = connection.prepareStatement(insert);
+		ps.setString(1, forum.getTitle());
+		ps.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
+		ps.executeUpdate();
+		close();
+	}
+
+	public static List<Forum> getAllForums() throws ClassNotFoundException, SQLException {
+		open();
+		List<Forum> list = new LinkedList<>();
+		String select = "SELECT * FROM forums";
+		PreparedStatement ps = connection.prepareStatement(select);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			Forum forum = new Forum(rs.getInt("id"), rs.getString("title"), rs.getTimestamp("date_created"));
+			list.add(forum);
+		}
+		rs.close();
+		ps.close();
+		close();
+		return list;
+	}
+
+	public static String getForumTitleById(String forumId) throws ClassNotFoundException, SQLException {
+		open();
+		String forumTitle = null;
+		String select = "SELECT title FROM forums WHERE id = " + forumId;
+		PreparedStatement ps = connection.prepareStatement(select);
+		ResultSet rs = ps.executeQuery();
+		if (rs.next()) {
+			forumTitle = rs.getString("title");
+		}
+		close();
+		return forumTitle;
+	}
+
+	public static void insertTopic(Topic topic, String forum_id, String user_id)
+			throws ClassNotFoundException, SQLException {
+		open();
+		String insert = "INSERT INTO topics (title,date_created,forum_id,user_id) VALUES (?,NOW(),?,?);";
+		PreparedStatement ps = connection.prepareStatement(insert);
+		ps.setString(1, topic.getTitle());
+		ps.setString(2, forum_id);
+		ps.setString(3, user_id);
+		ps.executeUpdate();
+		close();
+	}
+
+	public static List<Topic> getAllTopicsByForumId(String forumId) throws ClassNotFoundException, SQLException {
+		open();
+		List<Topic> list = new LinkedList<>();
+		String select = "SELECT * FROM topics where forum_id=" + forumId;
+		PreparedStatement ps = connection.prepareStatement(select);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			Topic topic = new Topic(rs.getInt("id"), rs.getString("title"), rs.getTimestamp("date_created"),
+					rs.getTimestamp("date_modified"), rs.getInt("forum_id"), rs.getInt("user_id"));
+			list.add(topic);
+		}
+		close();
+		return list;
+	}
+
+	public static String getTopicTitleById(String topicId) throws ClassNotFoundException, SQLException {
+		open();
+		String topicTitle = null;
+		String select = "SELECT title FROM topics WHERE id = " + topicId;
+		PreparedStatement ps = connection.prepareStatement(select);
+		ResultSet rs = ps.executeQuery();
+		if (rs.next()) {
+			topicTitle = rs.getString("title");
+		}
+		close();
+		return topicTitle;
+	}
+
+	public static void insertReply(Reply reply, String topicId, String userId)
+			throws ClassNotFoundException, SQLException {
+		open();
+		String insert = "INSERT INTO replies (message,date_created,topic_id,user_id) VALUES (?,NOW(),?,?);";
+		PreparedStatement ps = connection.prepareStatement(insert);
+		ps.setString(1, reply.getMessage());
+		ps.setString(2, topicId);
+		ps.setString(3, userId);
+		ps.executeUpdate();
+		close();
+	}
+
+	public static List<Reply> getAllRepliesByTopicId(String topicId) throws ClassNotFoundException, SQLException {
+		open();
+		List<Reply> list = new LinkedList<>();
+		String select = "SELECT * FROM replies WHERE topic_id=" + topicId;
+		PreparedStatement ps = connection.prepareStatement(select);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			Reply reply = new Reply(rs.getString("message"), rs.getTimestamp("date_created"), rs.getInt("topic_id"),
+					rs.getInt("user_id"));
+			list.add(reply);
+		}
+		close();
+		return list;
+	}
+
+}
