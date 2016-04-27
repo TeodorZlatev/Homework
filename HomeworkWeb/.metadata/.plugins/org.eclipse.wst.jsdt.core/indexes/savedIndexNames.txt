@@ -1,8 +1,0 @@
-INDEX VERSION 1.3+D:\Projects\SwiftAcademy\Homework\HomeworkWeb\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
-1918552229.index
-1576081449.index
-433285005.index
-3964580281.index
-1235492324.index
-3967020762.index
-2291061506.index
