@@ -1,0 +1,51 @@
+package entities;
+
+import java.util.Date;
+
+public class Reply {
+	private String message;
+	private Date createdAt;
+	private int topicId;
+	private int userId;
+	
+	public Reply(String message, Date createdAt, int topicId, int userId) {
+		super();
+		this.message = message;
+		this.createdAt = createdAt;
+		this.topicId = topicId;
+		this.userId = userId;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public int getTopicId() {
+		return topicId;
+	}
+
+	public void setTopicId(int topicId) {
+		this.topicId = topicId;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
+}

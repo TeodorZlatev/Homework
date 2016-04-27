@@ -1,0 +1,46 @@
+package entities;
+
+import java.util.Date;
+import java.util.List;
+
+public class Forum {
+	private int id;
+	private String title;
+	private Date createdAt;
+	private List<Topic> topicsList;
+
+	public Forum() {
+	}
+
+	public Forum(int id, String title, Date createdAt) {
+		super();
+		this.id = id;
+		this.title = title;
+		this.createdAt = createdAt;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public List<Topic> getTopicsList() {
+		return topicsList;
+	}
+
+	public void setTopicsList(List<Topic> topicsList) {
+		this.topicsList = topicsList;
+	}
+
+}
